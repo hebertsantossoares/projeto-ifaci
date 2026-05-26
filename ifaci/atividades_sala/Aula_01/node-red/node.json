@@ -1,0 +1,101 @@
+[
+  {
+    "id": "tab_sensores",
+    "type": "tab",
+    "label": "Sensores IoT",
+    "disabled": false,
+    "info": ""
+  },
+  {
+    "id": "inject_sensores",
+    "type": "inject",
+    "z": "tab_sensores",
+    "name": "Enviar Sensores",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "5",
+    "crontab": "",
+    "once": true,
+    "onceDelay": "1",
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 180,
+    "y": 180,
+    "wires": [
+      [
+        "function_sensores"
+      ]
+    ]
+  },
+  {
+    "id": "function_sensores",
+    "type": "function",
+    "z": "tab_sensores",
+    "name": "Gerar Dados Sensores",
+    "func": "msg.payload = {\n    temperatura: Math.floor(Math.random() * 50),\n    pressao: (Math.random() * 2).toFixed(2),\n    umidade: (Math.random()).toFixed(2),\n    sensor_presenca: Math.random() > 0.5,\n    trava_seguranca: Math.random() > 0.5\n};\n\nreturn msg;",
+    "outputs": 1,
+    "timeout": "",
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 450,
+    "y": 180,
+    "wires": [
+      [
+        "http_request_api"
+      ]
+    ]
+  },
+  {
+    "id": "http_request_api",
+    "type": "http request",
+    "z": "tab_sensores",
+    "name": "Enviar para API",
+    "method": "POST",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "http://127.0.0.1:8080/newData",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": false,
+    "headers": [
+      {
+        "keyType": "other",
+        "keyValue": "Content-Type",
+        "valueType": "other",
+        "valueValue": "application/json"
+      }
+    ],
+    "x": 720,
+    "y": 180,
+    "wires": [
+      [
+        "debug_resposta"
+      ]
+    ]
+  },
+  {
+    "id": "debug_resposta",
+    "type": "debug",
+    "z": "tab_sensores",
+    "name": "Resposta API",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": true,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 980,
+    "y": 180,
+    "wires": []
+  }
+]
